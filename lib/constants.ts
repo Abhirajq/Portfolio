@@ -286,7 +286,7 @@ export const CONTACT = {
   social: {
     github: "https://github.com/abhirajgovind",
     linkedin: "https://linkedin.com/in/abhirajgovind",
-    email: "abhiraj@example.com",
+    email: "abhirajg67@gmail.com",
   },
 };
 
