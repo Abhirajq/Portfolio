@@ -284,8 +284,8 @@ export const CONTACT = {
     "Generative AI Engineer",
   ],
   social: {
-    github: "https://github.com/abhirajgovind",
-    linkedin: "https://linkedin.com/in/abhirajgovind",
+    github: "https://github.com/Abhirajq",
+    linkedin: "https://www.linkedin.com/in/abhiraj-govind-574ba3214",
     email: "abhirajg67@gmail.com",
   },
 };
