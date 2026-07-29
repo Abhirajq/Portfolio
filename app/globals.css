@@ -1,20 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import "tailwindcss";
 
 /* stylelint-disable */
 /* csslint ignore:start */
-
-:root {
-  --color-bg-primary: #0a0a1a;
-  --color-bg-secondary: #0d1117;
-  --color-text-primary: #f0f4ff;
-  --color-text-muted: #64748b;
-  --color-indigo: #6366f1;
-  --color-violet: #7c3aed;
-  --color-cyan: #38bdf8;
-  
-  --font-mono: 'Space Mono', monospace;
-}
 
 @theme {
   --spacing: 0.25rem;
@@ -29,10 +16,11 @@
   --color-card: rgba(13, 17, 23, 0.7);
   --color-border: rgba(99, 102, 241, 0.15);
   
-  /* Text */
+  /* Text — muted raised from #64748B (4.15:1 on bg) to meet WCAG AA */
   --color-text-primary: #f0f4ff;
   --color-text-secondary: #CBD5E1;
-  --color-text-muted: #64748B;
+  --color-text-muted: #94A3B8;
+  --color-text-faint: #64748B;
 
   /* Accent Colors */
   --color-electric-blue: #3B82F6;
@@ -63,10 +51,19 @@
   --radius-image: 20px;
   --radius-tag: 999px;
 
-  /* Fonts */
-  --font-heading: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-code: 'JetBrains Mono', monospace;
+  /* Fonts — route through the next/font variables set on <html> rather than
+     naming the families directly. Those variables also carry next/font's
+     metric-matched fallback (e.g. "Space Grotesk Fallback"), which is what
+     keeps text from reflowing while the webfont loads. */
+  --font-heading: var(--font-space-grotesk), ui-sans-serif, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-code: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* Type scale — `text-xxs` was used across the app but never defined,
+     so those elements silently inherited the 1rem body size. */
+  --text-xxs: 0.75rem;
+  --text-xxs--line-height: 1.5;
 }
 
 /* Base html/body adjustments */
@@ -88,6 +85,21 @@ body {
 ::selection {
   background-color: rgba(59, 130, 246, 0.3);
   color: var(--color-text-primary);
+}
+
+/* Keyboard focus — many controls set `focus:outline-none`, so restore a
+   visible affordance for keyboard users without affecting mouse clicks. */
+:focus-visible {
+  outline: 2px solid var(--color-electric-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect users who ask for less motion in the OS. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* Scrollbar */

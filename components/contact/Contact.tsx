@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Mail,
@@ -11,34 +10,25 @@ import {
   Copy,
   ChevronDown,
   ArrowRight,
+  AlertTriangle,
+  Loader2,
 } from "lucide-react";
-
-// Brand SVG for GitHub
-const GithubIcon = ({ size = 16 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-  </svg>
-);
 import { CONTACT } from "@/lib/constants";
+import { contactFormSchema, type ContactFormValues } from "@/lib/schemas";
 import SectionHeader from "@/components/shared/SectionHeader";
 import GlowCard from "@/components/shared/GlowCard";
+import { GithubIcon, LinkedinIcon } from "@/components/shared/BrandIcons";
 
-// ============================================
-// FORM SCHEMAS (Zod validation)
-// ============================================
-const contactFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  company: z.string().optional(),
-  subject: z.string().min(4, "Subject must be at least 4 characters"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-});
+const inputClasses =
+  "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-text-primary placeholder:text-text-faint focus:border-electric-blue focus:outline-none transition-colors";
 
-type ContactFormValues = z.infer<typeof contactFormSchema>;
+const labelClasses =
+  "block text-xxs font-bold uppercase tracking-wider text-text-muted mb-2 font-[family-name:var(--font-heading)]";
 
 export default function Contact() {
   const [isCopied, setIsCopied] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
   const {
@@ -51,33 +41,42 @@ export default function Contact() {
   });
 
   const onSubmit = async (data: ContactFormValues) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    console.log("Form submitted data:", data);
-    setFormSubmitted(true);
-    reset();
+    setSubmitError(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const payload = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        setSubmitError(
+          payload.error ?? "Something went wrong. Please email me directly.",
+        );
+        return;
+      }
+
+      setFormSubmitted(true);
+      reset();
+    } catch {
+      setSubmitError(
+        "Couldn't reach the server. Please check your connection or email me directly.",
+      );
+    }
   };
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(CONTACT.social.email);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2000);
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(CONTACT.social.email);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch {
+      // Clipboard can be blocked by permissions; the mailto link below still works.
+    }
   };
-
-  const faqs = [
-    {
-      q: "What roles are you looking for?",
-      a: "I am actively seeking AI Engineer, Machine Learning Engineer, LLM Engineer, Applied AI, or Research Engineer roles.",
-    },
-    {
-      q: "Which AI domains interest you most?",
-      a: "Large Language Models (post-training, prompt engineering, RAG pipelines), Audio Deepfake detection, and adversarial robustness/AI Safety.",
-    },
-    {
-      q: "Are you open to relocation?",
-      a: "Yes, I am open to Remote, Hybrid, and onsite relocation based on the opportunity.",
-    },
-  ];
 
   return (
     <section id="contact" className="py-20 relative bg-bg-secondary/10">
@@ -108,7 +107,7 @@ export default function Contact() {
               </div>
 
               <div>
-                <span className="text-[10px] text-text-muted uppercase tracking-wider font-[family-name:var(--font-code)]">
+                <span className="text-xxs text-text-muted uppercase tracking-wider font-[family-name:var(--font-code)]">
                   Availability Status
                 </span>
                 <h4 className="text-sm font-bold text-text-primary mt-1 font-[family-name:var(--font-heading)]">
@@ -131,7 +130,9 @@ export default function Contact() {
             {/* Clipboard and Link buttons */}
             <div className="flex flex-col gap-3">
               <button
+                type="button"
                 onClick={handleCopyEmail}
+                aria-label={`Copy email address ${CONTACT.social.email}`}
                 className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-white/10 rounded-xl transition-all duration-300"
               >
                 <div className="flex items-center gap-3">
@@ -155,7 +156,9 @@ export default function Contact() {
                   className="flex-1 flex items-center justify-center gap-2 p-3 bg-white/[0.02] border border-white/5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all"
                 >
                   <GithubIcon size={14} />
-                  <span className="text-xs font-semibold font-[family-name:var(--font-heading)]">GitHub</span>
+                  <span className="text-xs font-semibold font-[family-name:var(--font-heading)]">
+                    GitHub
+                  </span>
                 </a>
 
                 <a
@@ -164,23 +167,26 @@ export default function Contact() {
                   rel="noopener noreferrer"
                   className="flex-1 flex items-center justify-center gap-2 p-3 bg-white/[0.02] border border-white/5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all"
                 >
-                  {/* LinkedIn SVG */}
-                  <svg width={14} height={14} viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                  <span className="text-xs font-semibold font-[family-name:var(--font-heading)]">LinkedIn</span>
+                  <LinkedinIcon size={14} />
+                  <span className="text-xs font-semibold font-[family-name:var(--font-heading)]">
+                    LinkedIn
+                  </span>
                 </a>
               </div>
             </div>
 
             {/* FAQ Accordion */}
             <div className="space-y-3">
-              {faqs.map((faq, idx) => {
+              {CONTACT.faqs.map((faq, idx) => {
                 const isOpen = activeFaq === idx;
 
                 return (
                   <div key={idx} className="border border-white/5 rounded-xl overflow-hidden">
                     <button
+                      type="button"
                       onClick={() => setActiveFaq(isOpen ? null : idx)}
-                      className="w-full flex items-center justify-between p-4 bg-white/[0.01] hover:bg-white/[0.03] transition-colors text-left"
+                      aria-expanded={isOpen}
+                      className="w-full flex items-center justify-between p-4 bg-white/[0.01] hover:bg-white/[0.03] transition-colors text-left gap-4"
                     >
                       <span className="text-xs font-semibold text-text-primary font-[family-name:var(--font-heading)]">
                         {faq.q}
@@ -188,6 +194,7 @@ export default function Contact() {
                       <motion.div
                         animate={{ rotate: isOpen ? 180 : 0 }}
                         transition={{ duration: 0.2 }}
+                        className="shrink-0"
                       >
                         <ChevronDown size={14} className="text-text-muted" />
                       </motion.div>
@@ -219,85 +226,148 @@ export default function Contact() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     className="space-y-4"
+                    noValidate
                   >
+                    {/* Honeypot — hidden from humans, tempting to bots. */}
+                    <div className="absolute w-px h-px -m-px overflow-hidden [clip:rect(0,0,0,0)]" aria-hidden="true">
+                      <label htmlFor="website">Website</label>
+                      <input
+                        id="website"
+                        type="text"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        {...register("website")}
+                      />
+                    </div>
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xxs font-bold uppercase tracking-wider text-text-muted mb-2 font-[family-name:var(--font-heading)]">
+                        <label htmlFor="name" className={labelClasses}>
                           Name
                         </label>
                         <input
+                          id="name"
                           {...register("name")}
                           type="text"
-                          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-text-primary focus:border-electric-blue focus:outline-none transition-colors"
+                          autoComplete="name"
+                          aria-invalid={!!errors.name}
+                          className={inputClasses}
                         />
                         {errors.name && (
-                          <p className="text-xxs text-soft-orange mt-1">{errors.name.message}</p>
+                          <p role="alert" className="text-xxs text-soft-orange mt-1">
+                            {errors.name.message}
+                          </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-xxs font-bold uppercase tracking-wider text-text-muted mb-2 font-[family-name:var(--font-heading)]">
+                        <label htmlFor="company" className={labelClasses}>
                           Company (Optional)
                         </label>
                         <input
+                          id="company"
                           {...register("company")}
                           type="text"
-                          className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-text-primary focus:border-electric-blue focus:outline-none transition-colors"
+                          autoComplete="organization"
+                          className={inputClasses}
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xxs font-bold uppercase tracking-wider text-text-muted mb-2 font-[family-name:var(--font-heading)]">
+                      <label htmlFor="email" className={labelClasses}>
                         Email Address
                       </label>
                       <input
+                        id="email"
                         {...register("email")}
                         type="email"
-                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-text-primary focus:border-electric-blue focus:outline-none transition-colors"
+                        autoComplete="email"
+                        aria-invalid={!!errors.email}
+                        className={inputClasses}
                       />
                       {errors.email && (
-                        <p className="text-xxs text-soft-orange mt-1">{errors.email.message}</p>
+                        <p role="alert" className="text-xxs text-soft-orange mt-1">
+                          {errors.email.message}
+                        </p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-xxs font-bold uppercase tracking-wider text-text-muted mb-2 font-[family-name:var(--font-heading)]">
+                      <label htmlFor="subject" className={labelClasses}>
                         Subject
                       </label>
                       <input
+                        id="subject"
                         {...register("subject")}
                         type="text"
-                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-text-primary focus:border-electric-blue focus:outline-none transition-colors"
+                        aria-invalid={!!errors.subject}
+                        className={inputClasses}
                       />
                       {errors.subject && (
-                        <p className="text-xxs text-soft-orange mt-1">{errors.subject.message}</p>
+                        <p role="alert" className="text-xxs text-soft-orange mt-1">
+                          {errors.subject.message}
+                        </p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-xxs font-bold uppercase tracking-wider text-text-muted mb-2 font-[family-name:var(--font-heading)]">
+                      <label htmlFor="message" className={labelClasses}>
                         Message
                       </label>
                       <textarea
+                        id="message"
                         {...register("message")}
                         rows={4}
-                        className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-text-primary focus:border-electric-blue focus:outline-none transition-colors resize-none"
+                        aria-invalid={!!errors.message}
+                        className={`${inputClasses} resize-none`}
                       />
                       {errors.message && (
-                        <p className="text-xxs text-soft-orange mt-1">{errors.message.message}</p>
+                        <p role="alert" className="text-xxs text-soft-orange mt-1">
+                          {errors.message.message}
+                        </p>
                       )}
                     </div>
+
+                    {submitError && (
+                      <div
+                        role="alert"
+                        className="flex items-start gap-3 p-4 rounded-xl bg-soft-orange/10 border border-soft-orange/30"
+                      >
+                        <AlertTriangle size={16} className="text-soft-orange shrink-0 mt-0.5" />
+                        <div className="text-xs text-text-secondary leading-relaxed">
+                          <p>{submitError}</p>
+                          <a
+                            href={`mailto:${CONTACT.social.email}`}
+                            className="inline-block mt-1 font-semibold text-soft-orange hover:underline"
+                          >
+                            {CONTACT.social.email}
+                          </a>
+                        </div>
+                      </div>
+                    )}
 
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full group relative py-3.5 rounded-xl font-medium text-sm overflow-hidden flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50"
+                      className="w-full group relative py-3.5 rounded-xl font-medium text-sm overflow-hidden flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100"
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-electric-blue to-ai-purple rounded-xl" />
-                      <span className="relative flex items-center gap-2">
-                        {isSubmitting ? "Sending Pipeline..." : "Let's Build Something Intelligent"}
-                        {!isSubmitting && <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />}
+                      <span className="relative flex items-center gap-2 text-white">
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 size={14} className="animate-spin" />
+                            Sending…
+                          </>
+                        ) : (
+                          <>
+                            Let&apos;s Build Something Intelligent
+                            <ArrowRight
+                              size={14}
+                              className="group-hover:translate-x-1 transition-transform"
+                            />
+                          </>
+                        )}
                       </span>
                     </button>
                   </motion.form>
@@ -312,16 +382,18 @@ export default function Contact() {
                       <Check size={20} />
                     </div>
                     <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] text-text-primary">
-                      Transmission Successful
+                      Message Sent
                     </h3>
                     <p className="text-xs text-text-secondary max-w-sm mx-auto leading-relaxed">
-                      Your query has been serialized and injected into my message pipeline. I will respond to you shortly.
+                      Thanks for reaching out — your message landed in my inbox and I&apos;ll get
+                      back to you shortly.
                     </p>
                     <button
+                      type="button"
                       onClick={() => setFormSubmitted(false)}
                       className="px-6 py-2 text-xs font-semibold rounded-full border border-white/10 text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors"
                     >
-                      Send another query
+                      Send another message
                     </button>
                   </motion.div>
                 )}
