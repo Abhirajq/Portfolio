@@ -60,7 +60,7 @@ export const ABOUT = {
     "I'm an AI/ML Engineer passionate about building intelligent systems that solve meaningful problems.",
     "My interests lie at the intersection of Machine Learning, Large Language Models, Deep Learning, and scalable AI engineering.",
     "I enjoy designing end-to-end AI pipelines—from dataset preparation and feature engineering to model evaluation, benchmarking, and deployment. I believe successful AI systems require more than high-performing models; they demand reproducibility, maintainability, thoughtful architecture, and continuous evaluation.",
-    "Currently, as an LLM Post-Training Intern at Ethara AI, I work on benchmarking workflows, dataset engineering, automated evaluation pipelines, and production-oriented machine learning infrastructure.",
+    "I joined Ethara AI as an LLM Post-Training Intern and now work there as a Software Engineer, building benchmarking workflows, dataset engineering, automated evaluation pipelines, and production-oriented machine learning infrastructure.",
     "My long-term goal is to contribute to foundation models, multimodal AI, and research-driven products that make artificial intelligence more useful, reliable, and accessible.",
   ],
   principles: [
@@ -94,11 +94,31 @@ export const ABOUT = {
 
 export const EXPERIENCE = {
   company: "Ethara AI",
-  role: "LLM Post-Training Intern",
-  // ISO start date — the "N mos" figures shown in the hero and About section are
-  // derived from this on the server, so they never go stale or disagree.
+  // ISO date the tenure at this company began — the "N mos" figures shown in the
+  // hero and About section derive from this on the server, so they never go
+  // stale or disagree. Keep it at the *first* role, not the current one.
   startDate: "2026-01-01",
-  duration: "Jan 2026 - Present",
+
+  // Newest first. Converting from a single role to a list so the promotion
+  // shows as progression: moving from intern to engineer inside six months is
+  // evidence of performance, and collapsing it to one title throws that away.
+  roles: [
+    {
+      title: "Software Engineer",
+      duration: "Jul 2026 - Present",
+      current: true,
+      summary:
+        "Building the same class of benchmarking pipelines for Large Language Models, now focused on the DevOps side: containerised evaluation environments, automated pipeline execution, and infrastructure that keeps benchmark runs reproducible.",
+    },
+    {
+      title: "LLM Post-Training Intern",
+      duration: "Jan 2026 - Jul 2026",
+      current: false,
+      summary:
+        "Built scalable benchmarking pipelines, preprocessed large datasets, and automated evaluation workflows for Large Language Models.",
+    },
+  ],
+
   description:
     "Working on production-oriented workflows for evaluating and improving Large Language Models.",
   details:
@@ -306,10 +326,11 @@ export const RESEARCH = {
     title: "Adversarial Machine Learning for Security",
     summary:
       "Explores adversarial attacks against machine learning models and discusses defensive strategies for improving robustness. The research investigates vulnerabilities introduced through adversarial examples and emphasizes the importance of secure AI system design.",
-    // Fill these in — the byline and "Read the paper" button only render when set.
+    // Venue and date taken from the CV. `authors` is left blank because the CV
+    // doesn't list co-authors — fill it in if the paper has any.
     authors: "",
-    venue: "",
-    year: "2024",
+    venue: "Journal of Scientific and Industrial Advanced Research (JSIAR)",
+    year: "Apr 2025",
     url: "",
   },
   interests: [

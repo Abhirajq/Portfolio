@@ -102,6 +102,11 @@ interface AboutProps {
 export default function About({ stats }: AboutProps) {
   const [activeModule, setActiveModule] = useState<number | null>(null);
 
+  // Roles are stored newest-first; fall back to the first entry so the card
+  // still renders if `current` is ever left unset.
+  const currentRole = EXPERIENCE.roles.find((role) => role.current) ?? EXPERIENCE.roles[0];
+  const priorRoles = EXPERIENCE.roles.filter((role) => role !== currentRole);
+
   return (
     <div className="space-y-20 md:space-y-24">
       {/* ============================================
@@ -269,17 +274,41 @@ export default function About({ stats }: AboutProps) {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             {/* Timeline Column */}
             <div className="lg:col-span-4 flex flex-col items-center lg:items-start">
-              <div className="relative border-l border-line pl-6 space-y-12">
-                <div className="relative">
-                  <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-electric-blue border-4 border-bg-primary glow-blue" />
-                  <h4 className="font-bold text-text-primary text-sm font-[family-name:var(--font-heading)]">
-                    {EXPERIENCE.company}
-                  </h4>
-                  <p className="text-xs text-text-secondary">{EXPERIENCE.role}</p>
-                  <span className="inline-block mt-2 px-2.5 py-0.5 text-xxs font-medium rounded-full bg-emerald/10 border border-emerald/20 text-emerald">
-                    {EXPERIENCE.duration}
-                  </span>
-                </div>
+              <div className="relative border-l border-line pl-6 space-y-8">
+                {/* One node per role at the company, so the promotion is legible
+                    as progression rather than hidden behind a single title. */}
+                {EXPERIENCE.roles.map((role, idx) => (
+                  <div key={role.title} className={`relative ${role.current ? "" : "opacity-80"}`}>
+                    <div
+                      className={
+                        role.current
+                          ? "absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-electric-blue border-4 border-bg-primary glow-blue"
+                          : "absolute -left-[29px] top-1.5 w-3.5 h-3.5 rounded-full bg-electric-blue/40 border-4 border-bg-primary"
+                      }
+                    />
+                    {idx === 0 && (
+                      <h4 className="font-bold text-text-primary text-sm font-[family-name:var(--font-heading)]">
+                        {EXPERIENCE.company}
+                      </h4>
+                    )}
+                    <p
+                      className={`text-xs ${
+                        role.current ? "text-text-primary font-semibold" : "text-text-secondary"
+                      }`}
+                    >
+                      {role.title}
+                    </p>
+                    <span
+                      className={`inline-block mt-1.5 px-2.5 py-0.5 text-xxs font-medium rounded-full ${
+                        role.current
+                          ? "bg-emerald/10 border border-emerald/20 text-emerald"
+                          : "bg-tint text-text-muted font-[family-name:var(--font-code)]"
+                      }`}
+                    >
+                      {role.duration}
+                    </span>
+                  </div>
+                ))}
 
                 <div className="relative opacity-70">
                   <div className="absolute -left-[29px] top-1.5 w-3.5 h-3.5 rounded-full bg-tint-strong border-4 border-bg-primary" />
@@ -299,7 +328,7 @@ export default function About({ stats }: AboutProps) {
                   </h4>
                   <p className="text-xs text-text-muted">Adversarial ML</p>
                   <span className="text-xxs text-text-muted font-[family-name:var(--font-code)]">
-                    2024
+                    Apr 2025
                   </span>
                 </div>
               </div>
@@ -308,20 +337,39 @@ export default function About({ stats }: AboutProps) {
             {/* Content Details Column */}
             <div className="lg:col-span-8 space-y-8">
               <GlowCard hover={false} glowColor="purple">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4 mb-6">
-                  <div>
-                    <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] text-text-primary">
-                      {EXPERIENCE.role}
-                    </h3>
-                    <p className="text-sm text-electric-blue">{EXPERIENCE.company}</p>
+                <div className="border-b border-line pb-4 mb-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] text-text-primary">
+                        {currentRole.title}
+                      </h3>
+                      <p className="text-sm text-electric-blue">{EXPERIENCE.company}</p>
+                    </div>
+                    <span className="text-xs text-text-muted font-[family-name:var(--font-code)] self-start sm:self-center">
+                      {currentRole.duration}
+                    </span>
                   </div>
-                  <span className="text-xs text-text-muted font-[family-name:var(--font-code)] self-start sm:self-center">
-                    {EXPERIENCE.duration}
-                  </span>
+
+                  {/* Prior titles at the same employer — reads as a promotion,
+                      which a single current title would hide. */}
+                  {priorRoles.length > 0 && (
+                    <p className="mt-3 text-xxs text-text-muted">
+                      <span className="uppercase tracking-wider font-semibold">Previously</span>
+                      {priorRoles.map((role) => (
+                        <span key={role.title}>
+                          {" · "}
+                          {role.title}{" "}
+                          <span className="font-[family-name:var(--font-code)] text-text-faint">
+                            ({role.duration})
+                          </span>
+                        </span>
+                      ))}
+                    </p>
+                  )}
                 </div>
 
                 <p className="text-text-secondary text-sm md:text-base leading-relaxed mb-6">
-                  {EXPERIENCE.details}
+                  {currentRole.summary || EXPERIENCE.details}
                 </p>
 
                 <h4 className="text-xs font-bold uppercase tracking-wider text-text-muted mb-4 font-[family-name:var(--font-heading)]">
@@ -373,7 +421,7 @@ export default function About({ stats }: AboutProps) {
                 {/* Achievements */}
                 <div className="mt-8 pt-6 border-t border-line">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-text-muted mb-4 font-[family-name:var(--font-heading)]">
-                    Internship Achievements
+                    Achievements
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {EXPERIENCE.achievements.map((achievement) => (

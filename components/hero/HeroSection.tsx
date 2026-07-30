@@ -1,10 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { Brain, Search, AudioLines, FileText, type LucideIcon } from "lucide-react";
 import { HERO, PROJECTS } from "@/lib/constants";
 import type { Stat } from "@/lib/utils";
+
+// three.js is ~150kB and needs a real DOM, so it never touches the server
+// bundle or the first paint. The photo covers the gap while it loads.
+const PortraitCloud = dynamic(() => import("./PortraitCloud"), { ssr: false });
 
 const featureIcons: Record<string, LucideIcon> = {
   Brain,
@@ -99,32 +104,40 @@ export default function HeroSection({ photoSrc, stats }: HeroSectionProps) {
             transition={{ type: "spring", stiffness: 100, delay: 0.2 }}
             className="relative w-[300px] h-[300px] sm:w-[340px] sm:h-[340px] z-10 flex items-center justify-center"
           >
-            {/* Thin gradient ring, then the photo, then a vignette.
-                The source image has a light studio background which otherwise
-                reads as a bright blob against the near-black page — the grade
-                and the inner vignette pull it back into the palette.
-                Replacing profile.jpg with a background-removed cutout would
-                remove the need for this entirely. */}
+            {/* Gradient ring around a 3D point-cloud reconstruction of the
+                portrait. The flat photo remains the fallback for no-WebGL and
+                for the moment before the cloud is built, so this never renders
+                as an empty circle. */}
             <div className="relative w-[290px] h-[290px] rounded-full p-[1.5px] bg-gradient-to-br from-electric-blue/50 via-ai-purple/30 to-transparent">
               <div className="relative w-full h-full rounded-full overflow-hidden bg-bg-secondary">
-                <Image
+                {/* The canvas is decorative to a screen reader, so the portrait
+                    needs its text alternative supplied here instead. */}
+                <span className="sr-only">
+                  Portrait of {HERO.name}, rendered as a 3D point cloud
+                </span>
+                <PortraitCloud
                   src={photoSrc}
-                  alt={`Portrait of ${HERO.name}`}
-                  fill
-                  sizes="290px"
-                  className="object-cover scale-105 portrait-grade"
-                  priority
+                  className="absolute inset-0 h-full w-full"
+                  fallback={
+                    <>
+                      <Image
+                        src={photoSrc}
+                        alt={`Portrait of ${HERO.name}`}
+                        fill
+                        sizes="290px"
+                        className="object-cover scale-105 portrait-grade"
+                        priority
+                      />
+                      <div
+                        className="absolute inset-0 rounded-full"
+                        style={{
+                          background:
+                            "radial-gradient(circle at 50% 38%, transparent 40%, color-mix(in srgb, var(--t-bg) 55%, transparent) 78%, color-mix(in srgb, var(--t-bg) 95%, transparent) 100%)",
+                        }}
+                      />
+                    </>
+                  }
                 />
-                {/* Vignette: fades the studio backdrop into the page colour */}
-                <div
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 50% 38%, transparent 40%, color-mix(in srgb, var(--t-bg) 55%, transparent) 78%, color-mix(in srgb, var(--t-bg) 95%, transparent) 100%)",
-                  }}
-                />
-                {/* Cool tint so the skin/background reads with the palette */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-t from-electric-blue/12 via-transparent to-ai-purple/10 mix-blend-overlay" />
               </div>
             </div>
 

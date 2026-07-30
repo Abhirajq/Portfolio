@@ -85,7 +85,8 @@ const personJsonLd = {
   "@type": "Person",
   name: SITE_CONFIG.name,
   url: SITE_CONFIG.url,
-  jobTitle: "AI/ML Engineer",
+  // Real current title; the site's positioning copy stays "AI/ML Engineer".
+  jobTitle: EXPERIENCE.roles.find((r) => r.current)?.title ?? "AI/ML Engineer",
   description: SITE_CONFIG.description,
   email: `mailto:${CONTACT.social.email}`,
   worksFor: {
