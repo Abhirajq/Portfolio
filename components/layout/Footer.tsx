@@ -28,7 +28,7 @@ export default function Footer({ year }: FooterProps) {
   ];
 
   return (
-    <footer className="relative border-t border-white/5">
+    <footer className="relative border-t border-line">
       {/* Animated Neural Line */}
       <div className="absolute top-0 left-0 right-0 h-px overflow-hidden" aria-hidden="true">
         <motion.div
@@ -73,7 +73,7 @@ export default function Footer({ year }: FooterProps) {
                 href={href}
                 {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 aria-label={label}
-                className="p-2.5 rounded-full bg-white/5 border border-white/5 text-text-muted hover:text-text-primary hover:bg-white/10 hover:border-white/10 transition-all"
+                className="p-2.5 rounded-full bg-tint border border-line text-text-muted hover:text-text-primary hover:bg-tint-strong hover:border-line transition-all"
               >
                 <Icon size={16} />
               </a>
@@ -82,7 +82,7 @@ export default function Footer({ year }: FooterProps) {
         </div>
 
         {/* Rotating Quote */}
-        <div className="mt-10 pt-8 border-t border-white/5 text-center">
+        <div className="mt-10 pt-8 border-t border-line text-center">
           <motion.p
             key={quoteIndex}
             initial={{ opacity: 0, y: 10 }}

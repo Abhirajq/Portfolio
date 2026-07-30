@@ -93,7 +93,7 @@ export default function Skills() {
   };
 
   return (
-    <section id="skills" className="py-20 relative bg-bg-secondary/10 scroll-mt-20">
+    <section id="skills" className="py-20 md:py-24 relative bg-band/60 scroll-mt-20">
       <div className="section-container relative z-10">
         <SectionHeader
           label="Skills"
@@ -101,7 +101,7 @@ export default function Skills() {
           subtitle="Interactive mapping of machine learning competencies, backend architectures, and tools."
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Column — Interactive Skill Matrix */}
           <div className="lg:col-span-7 space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -117,8 +117,8 @@ export default function Skills() {
                     onClick={() => selectCategory(idx)}
                     className={`p-5 rounded-2xl border text-left transition-all duration-300 ${
                       isActive
-                        ? "bg-white/5 border-white/10 glow-blue scale-[1.02]"
-                        : "bg-transparent border-white/5 hover:border-white/10 hover:bg-white/[0.02]"
+                        ? "bg-tint border-line glow-blue scale-[1.02]"
+                        : "bg-transparent border-line hover:border-line hover:bg-tint"
                     }`}
                   >
                     <div className="flex items-center gap-3 mb-4">
@@ -126,7 +126,7 @@ export default function Skills() {
                         className={`p-2.5 rounded-xl ${
                           isActive
                             ? "text-electric-blue bg-electric-blue/10"
-                            : "text-text-muted bg-white/5"
+                            : "text-text-muted bg-tint"
                         }`}
                       >
                         <Icon size={18} />
@@ -140,13 +140,13 @@ export default function Skills() {
                       {category.skills.slice(0, 3).map((skill) => (
                         <span
                           key={skill}
-                          className="px-2.5 py-1 text-xxs rounded-full bg-white/5 border border-white/5 text-text-secondary"
+                          className="card-flat px-2.5 py-1 text-xxs rounded-full text-text-secondary"
                         >
                           {skill}
                         </span>
                       ))}
                       {category.skills.length > 3 && (
-                        <span className="px-2 py-1 text-xxs rounded-full bg-white/10 text-text-muted">
+                        <span className="px-2 py-1 text-xxs rounded-full bg-tint-strong text-text-muted">
                           +{category.skills.length - 3} more
                         </span>
                       )}
@@ -161,7 +161,7 @@ export default function Skills() {
               key={activeCategory}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-6 glass rounded-[24px] border border-white/10 flex flex-col justify-between min-h-[220px]"
+              className="p-6 glass rounded-[24px] border border-line flex flex-col justify-between min-h-[220px]"
             >
               <div>
                 <h4 className="font-bold text-xs uppercase tracking-wider text-text-muted mb-4 font-[family-name:var(--font-heading)]">
@@ -179,7 +179,7 @@ export default function Skills() {
                       className={`px-3.5 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 ${
                         selectedSkill === skill
                           ? "bg-electric-blue/20 border-electric-blue/50 text-text-primary shadow-[0_0_15px_rgba(59,130,246,0.15)]"
-                          : "bg-white/5 border-white/5 text-text-secondary hover:border-white/15 hover:bg-white/10 hover:text-text-primary"
+                          : "bg-tint border-line text-text-secondary hover:border-line-strong hover:bg-tint-strong hover:text-text-primary"
                       }`}
                     >
                       {skill}
@@ -195,7 +195,7 @@ export default function Skills() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -5 }}
                   transition={{ duration: 0.2 }}
-                  className="mt-6 pt-4 border-t border-white/5"
+                  className="mt-6 pt-4 border-t border-line"
                 >
                   <span className="text-xxs uppercase tracking-wider text-electric-blue font-bold font-[family-name:var(--font-code)]">
                     Skill Overview
@@ -214,7 +214,7 @@ export default function Skills() {
               is verifiable; a self-assigned score out of 100 is not. */}
           <div className="lg:col-span-5">
             <GlowCard hover={false} glowColor="cyan" className="w-full">
-              <div className="border-b border-white/5 pb-4 mb-6">
+              <div className="border-b border-line pb-4 mb-6">
                 <h4 className="text-sm font-semibold font-[family-name:var(--font-heading)] text-text-primary">
                   Where These Skills Were Applied
                 </h4>
@@ -235,7 +235,7 @@ export default function Skills() {
                         <h5 className="text-xs font-bold text-text-primary font-[family-name:var(--font-heading)]">
                           {item.area}
                         </h5>
-                        <span className="inline-block mt-1 px-2 py-0.5 text-xxs font-medium rounded-full bg-white/5 border border-white/10 text-text-muted font-[family-name:var(--font-code)]">
+                        <span className="inline-block mt-1 px-2 py-0.5 text-xxs font-medium rounded-full bg-tint border border-line text-text-muted font-[family-name:var(--font-code)]">
                           {item.where}
                         </span>
                         <p className="text-xxs text-text-secondary leading-relaxed mt-1.5">

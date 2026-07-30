@@ -3,6 +3,8 @@ import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SITE_CONFIG, CONTACT, EXPERIENCE, RESEARCH } from "@/lib/constants";
 import Footer from "@/components/layout/Footer";
+import SiteBackdrop from "@/components/shared/SiteBackdrop";
+import ThemeScript from "@/components/shared/ThemeScript";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -68,8 +70,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a1a",
-  colorScheme: "dark",
+  // Browser UI follows whichever theme the visitor resolved to.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a1a" },
+  ],
+  colorScheme: "light dark",
 };
 
 // Structured data — helps search engines associate the site with the person,
@@ -101,12 +107,14 @@ export default function RootLayout({
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
       <body className="bg-bg-primary text-text-primary antialiased">
+        <ThemeScript />
         <a
           href="#content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-electric-blue focus:text-white focus:text-sm focus:font-semibold"
         >
           Skip to content
         </a>
+        <SiteBackdrop />
         <main id="content">{children}</main>
         <Footer year={new Date().getFullYear()} />
         <script

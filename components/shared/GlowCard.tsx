@@ -34,9 +34,9 @@ export default function GlowCard({
       whileHover={hover ? { y: -4, transition: { duration: 0.2 } } : undefined}
       className={`
         glass rounded-[24px] p-6 md:p-8
-        border border-white/[0.06]
+        border border-line
         transition-all duration-300
-        ${hover ? `hover:border-white/[0.12] ${glowColors[glowColor]}` : ""}
+        ${hover ? `hover:border-line-strong ${glowColors[glowColor]}` : ""}
         ${className}
       `}
     >

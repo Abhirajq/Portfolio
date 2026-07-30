@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Download, Menu, X } from "lucide-react";
 import { NAV_LINKS, SITE_CONFIG } from "@/lib/constants";
+import ThemeToggle from "@/components/shared/ThemeToggle";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,7 +54,7 @@ export default function Navbar() {
   }, [isOpen]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-bg-primary/80 backdrop-blur-md border-b border-white/5">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-bg-primary/80 backdrop-blur-md border-b border-line">
       <nav
         aria-label="Primary"
         className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between gap-4"
@@ -97,6 +98,8 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2 shrink-0">
+          <ThemeToggle />
+
           <a
             href={SITE_CONFIG.resume}
             download
@@ -114,7 +117,7 @@ export default function Navbar() {
             aria-expanded={isOpen}
             aria-controls="mobile-menu"
             aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-            className="md:hidden p-2 -mr-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors"
+            className="md:hidden p-2 -mr-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-tint transition-colors"
           >
             {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -129,7 +132,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="md:hidden overflow-hidden border-t border-white/5 bg-bg-primary/95 backdrop-blur-md"
+            className="md:hidden overflow-hidden border-t border-line bg-bg-primary/95 backdrop-blur-md"
           >
             <ul className="px-6 py-2 flex flex-col">
               {NAV_LINKS.map((link) => {
@@ -140,7 +143,7 @@ export default function Navbar() {
                       href={link.href}
                       onClick={() => setIsOpen(false)}
                       aria-current={isActive ? "true" : undefined}
-                      className={`block py-3 text-sm font-medium border-b border-white/5 last:border-b-0 transition-colors ${
+                      className={`block py-3 text-sm font-medium border-b border-line last:border-b-0 transition-colors ${
                         isActive
                           ? "text-electric-blue"
                           : "text-text-secondary hover:text-text-primary"

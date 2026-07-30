@@ -12,7 +12,7 @@ export default function Research() {
     .join(" · ");
 
   return (
-    <section id="research" className="py-20 relative scroll-mt-20">
+    <section id="research" className="py-20 md:py-24 relative scroll-mt-20">
       <div className="section-container relative z-10">
         <SectionHeader
           label="Research"
@@ -20,7 +20,7 @@ export default function Research() {
           subtitle="Investigating AI safety, adversarial robustness, and modern alignment techniques."
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Column — Featured Publication */}
           <div className="lg:col-span-7">
             <GlowCard hover={false} glowColor="purple" className="flex flex-col h-full">
@@ -47,12 +47,12 @@ export default function Research() {
                   goes nowhere reads worse than no link, so it only appears
                   once a URL exists. */}
               {publication.url && (
-                <div className="border-t border-white/5 pt-6 mt-auto">
+                <div className="border-t border-line pt-6 mt-auto">
                   <a
                     href={publication.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-full bg-white/5 border border-white/10 text-text-primary hover:bg-white/10 hover:border-white/20 transition-all duration-300"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold rounded-full bg-tint border border-line text-text-primary hover:bg-tint-strong hover:border-line-strong transition-all duration-300"
                   >
                     <ExternalLink size={14} /> Read the paper
                   </a>
@@ -63,7 +63,7 @@ export default function Research() {
 
           {/* Right Column — Research Interests & Reading List */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="glass rounded-[24px] p-6 md:p-8 border border-white/5">
+            <div className="glass rounded-[24px] p-6 md:p-8 border border-line">
               <h4 className="font-bold text-xs uppercase tracking-wider text-text-muted mb-4 font-[family-name:var(--font-heading)]">
                 Active Research Tracks
               </h4>
@@ -71,7 +71,7 @@ export default function Research() {
                 {RESEARCH.interests.map((interest) => (
                   <li
                     key={interest}
-                    className="px-3 py-1.5 text-xs font-semibold rounded-full bg-white/5 border border-white/5 text-text-secondary hover:text-text-primary hover:bg-white/10 transition-all duration-300"
+                    className="px-3 py-1.5 text-xs font-semibold rounded-full bg-tint border border-line text-text-secondary hover:text-text-primary hover:bg-tint-strong transition-all duration-300"
                   >
                     {interest}
                   </li>
@@ -79,8 +79,8 @@ export default function Research() {
               </ul>
             </div>
 
-            <div className="glass rounded-[24px] p-6 md:p-8 border border-white/5">
-              <div className="flex items-center gap-2 border-b border-white/5 pb-3 mb-5">
+            <div className="glass rounded-[24px] p-6 md:p-8 border border-line">
+              <div className="flex items-center gap-2 border-b border-line pb-3 mb-5">
                 <Bookmark size={14} className="text-electric-blue" />
                 <h4 className="font-bold text-xs uppercase tracking-wider text-text-primary font-[family-name:var(--font-heading)]">
                   Papers Shaping My Current Work
@@ -91,7 +91,7 @@ export default function Research() {
                 {RESEARCH.reading.map((paper) => (
                   <li
                     key={paper.title}
-                    className="pl-4 border-l border-white/10 hover:border-electric-blue/40 transition-colors"
+                    className="pl-4 border-l border-line hover:border-electric-blue/40 transition-colors"
                   >
                     <div className="flex justify-between items-start gap-3">
                       <h5 className="font-semibold text-xs text-text-primary font-[family-name:var(--font-heading)] leading-snug">

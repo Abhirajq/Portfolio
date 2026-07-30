@@ -44,11 +44,13 @@ export const HERO = {
   headline: { lead: "I Build", accent: "Intelligent", trail: "AI Systems." },
   subtext: "PyTorch · TensorFlow · LLMs · RAG — from research to production.",
   techStack: ["PyTorch", "TensorFlow", "Docker", "LLMs", "RAG", "AWS"],
+  // Lucide icon names — OS emoji rendered inconsistently across platforms and
+  // clashed with the crisp icon set used everywhere else on the page.
   features: [
-    { icon: "🧠", label: "LLM Engineering" },
-    { icon: "🔍", label: "RAG Systems" },
-    { icon: "🎙️", label: "Audio ML" },
-    { icon: "📄", label: "Research" },
+    { icon: "Brain", label: "LLM Engineering" },
+    { icon: "Search", label: "RAG Systems" },
+    { icon: "AudioLines", label: "Audio ML" },
+    { icon: "FileText", label: "Research" },
   ],
 };
 

@@ -25,7 +25,7 @@ import { GithubIcon } from "@/components/shared/BrandIcons";
 // Loading it client-side only also keeps ~100kB out of the initial bundle.
 const TrainingChart = dynamic(() => import("./TrainingChart"), {
   ssr: false,
-  loading: () => <div className="h-56 w-full animate-pulse rounded-xl bg-white/[0.02]" />,
+  loading: () => <div className="h-56 w-full animate-pulse rounded-xl bg-tint" />,
 });
 
 export default function Projects() {
@@ -37,7 +37,7 @@ export default function Projects() {
   };
 
   return (
-    <section id="projects" className="py-20 relative scroll-mt-20">
+    <section id="projects" className="py-20 md:py-24 relative scroll-mt-20">
       <div className="section-container relative z-10">
         <SectionHeader
           label="Projects"
@@ -60,7 +60,7 @@ export default function Projects() {
                 className={`px-5 sm:px-6 py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
                   activeProject === project.id
                     ? "bg-electric-blue text-white shadow-lg shadow-electric-blue/20"
-                    : "text-text-secondary hover:text-text-primary hover:bg-white/5"
+                    : "text-text-secondary hover:text-text-primary hover:bg-tint"
                 }`}
               >
                 {project.title}
@@ -116,7 +116,7 @@ export default function Projects() {
                           href={project.links.github}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-text-primary hover:bg-white/10 hover:border-white/20 transition-all"
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-tint border border-line text-xs font-semibold text-text-primary hover:bg-tint-strong hover:border-line-strong transition-all"
                         >
                           <GithubIcon size={14} />
                           View Source
@@ -138,7 +138,7 @@ export default function Projects() {
                           href={project.links.writeup}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-semibold text-text-primary hover:bg-white/10 hover:border-white/20 transition-all"
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-tint border border-line text-xs font-semibold text-text-primary hover:bg-tint-strong hover:border-line-strong transition-all"
                         >
                           <BookOpen size={14} />
                           Write-up
@@ -153,7 +153,7 @@ export default function Projects() {
                       {project.metrics.map((metric, idx) => (
                         <div
                           key={idx}
-                          className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl"
+                          className="card-raised p-4 rounded-2xl"
                         >
                           <div className="text-xl md:text-2xl font-bold font-[family-name:var(--font-heading)] text-neural-cyan">
                             {metric.value}
@@ -184,7 +184,7 @@ export default function Projects() {
                       {project.techStack.map((tech) => (
                         <li
                           key={tech}
-                          className="px-3 py-1 text-xxs rounded-lg bg-white/5 border border-white/5 text-text-secondary"
+                          className="card-flat px-3 py-1 text-xxs rounded-lg text-text-secondary"
                         >
                           {tech}
                         </li>
@@ -203,13 +203,13 @@ export default function Projects() {
                       return (
                         <div
                           key={section.id}
-                          className="border border-white/5 rounded-xl overflow-hidden"
+                          className="border border-line rounded-xl overflow-hidden"
                         >
                           <button
                             type="button"
                             onClick={() => toggleSection(section.id)}
                             aria-expanded={isOpen}
-                            className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.05] transition-colors text-left gap-4"
+                            className="w-full flex items-center justify-between p-4 bg-tint hover:bg-tint-strong transition-colors text-left gap-4"
                           >
                             <span className="text-xs font-semibold text-text-primary uppercase tracking-wider font-[family-name:var(--font-heading)]">
                               {section.label}
@@ -225,9 +225,9 @@ export default function Projects() {
                           <motion.div
                             initial={false}
                             animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-                            className="overflow-hidden bg-white/[0.01]"
+                            className="overflow-hidden bg-tint"
                           >
-                            <ul className="p-4 space-y-2 border-t border-white/5">
+                            <ul className="p-4 space-y-2 border-t border-line">
                               {section.items.map((item, idx) => (
                                 <li key={idx} className="flex gap-2.5 items-start">
                                   <span className="text-electric-blue text-xs mt-1.5">•</span>
@@ -254,7 +254,7 @@ export default function Projects() {
                     {isRAG ? (
                       /* RAG PIPELINE VISUALIZATION */
                       <div className="space-y-8 py-4">
-                        <div className="border-b border-white/5 pb-4 mb-4">
+                        <div className="border-b border-line pb-4 mb-4">
                           <h4 className="text-sm font-semibold font-[family-name:var(--font-heading)] text-text-primary">
                             Multi-Modal Retrieval-Augmented Generation Flow
                           </h4>
@@ -277,7 +277,7 @@ export default function Projects() {
                                       ? "bg-electric-blue/10 border-electric-blue/30 text-electric-blue"
                                       : isOutput
                                         ? "bg-neural-cyan/10 border-neural-cyan/30 text-neural-cyan"
-                                        : "bg-white/[0.02] border-white/5 text-text-secondary group-hover:border-white/10 group-hover:bg-white/[0.04]"
+                                        : "bg-tint border-line text-text-secondary group-hover:border-line group-hover:bg-tint-strong"
                                   } transition-all duration-300`}
                                 >
                                   <div
@@ -286,7 +286,7 @@ export default function Projects() {
                                         ? "bg-electric-blue/20"
                                         : isOutput
                                           ? "bg-neural-cyan/20"
-                                          : "bg-white/5"
+                                          : "bg-tint"
                                     }`}
                                   >
                                     {isInput ? (
@@ -304,7 +304,7 @@ export default function Projects() {
                                   </span>
                                 </div>
                                 {idx < project.pipeline.length - 1 && (
-                                  <div className="absolute left-[22px] top-[46px] w-px h-[18px] bg-white/10" />
+                                  <div className="absolute left-[22px] top-[46px] w-px h-[18px] bg-tint-strong" />
                                 )}
                               </li>
                             );
@@ -314,12 +314,12 @@ export default function Projects() {
                     ) : (
                       /* TRAINING DASHBOARD */
                       <div className="space-y-6">
-                        <div className="border-b border-white/5 pb-4 mb-4">
+                        <div className="border-b border-line pb-4 mb-4">
                           <div className="flex items-start justify-between gap-4">
                             <h4 className="text-sm font-semibold font-[family-name:var(--font-heading)] text-text-primary">
                               Hybrid CNN-LSTM Training Profile
                             </h4>
-                            <span className="shrink-0 px-2 py-0.5 text-xxs font-semibold uppercase tracking-wider rounded-full bg-white/5 border border-white/10 text-text-muted">
+                            <span className="shrink-0 px-2 py-0.5 text-xxs font-semibold uppercase tracking-wider rounded-full bg-tint border border-line text-text-muted">
                               Illustrative
                             </span>
                           </div>
@@ -330,8 +330,8 @@ export default function Projects() {
 
                         <TrainingChart />
 
-                        <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-white/5">
-                          <div className="text-center p-2.5 bg-white/[0.01] border border-white/5 rounded-xl">
+                        <div className="grid grid-cols-3 gap-3 mt-4 pt-4 border-t border-line">
+                          <div className="text-center p-2.5 bg-tint border border-line rounded-xl">
                             <div className="text-electric-blue text-xs font-bold flex items-center justify-center gap-1">
                               <Volume2 size={12} /> Librosa
                             </div>
@@ -339,7 +339,7 @@ export default function Projects() {
                               MFCC Config
                             </div>
                           </div>
-                          <div className="text-center p-2.5 bg-white/[0.01] border border-white/5 rounded-xl">
+                          <div className="text-center p-2.5 bg-tint border border-line rounded-xl">
                             <div className="text-ai-purple text-xs font-bold flex items-center justify-center gap-1">
                               <Sliders size={12} /> CNN LSTM
                             </div>
@@ -347,7 +347,7 @@ export default function Projects() {
                               Model Shape
                             </div>
                           </div>
-                          <div className="text-center p-2.5 bg-white/[0.01] border border-white/5 rounded-xl">
+                          <div className="text-center p-2.5 bg-tint border border-line rounded-xl">
                             <div className="text-neural-cyan text-xs font-bold flex items-center justify-center gap-1">
                               <TrendingUp size={12} /> 91%
                             </div>

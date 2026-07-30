@@ -20,7 +20,7 @@ import GlowCard from "@/components/shared/GlowCard";
 import { GithubIcon, LinkedinIcon } from "@/components/shared/BrandIcons";
 
 const inputClasses =
-  "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm text-text-primary placeholder:text-text-faint focus:border-electric-blue focus:outline-none transition-colors";
+  "w-full px-4 py-3 rounded-xl bg-tint border border-line text-sm text-text-primary placeholder:text-text-faint focus:border-electric-blue focus:outline-none transition-colors";
 
 const labelClasses =
   "block text-xxs font-bold uppercase tracking-wider text-text-muted mb-2 font-[family-name:var(--font-heading)]";
@@ -79,7 +79,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-20 relative bg-bg-secondary/10">
+    <section id="contact" className="py-20 md:py-24 relative bg-band/60">
       <div className="section-container relative z-10">
         <SectionHeader
           label="Contact"
@@ -87,7 +87,7 @@ export default function Contact() {
           subtitle="Let's build the future of artificial intelligence together."
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Column — Availability & Socials */}
           <div className="lg:col-span-5 space-y-8">
             <div className="space-y-4">
@@ -100,7 +100,7 @@ export default function Contact() {
             </div>
 
             {/* Availability status card */}
-            <div className="glass rounded-[24px] p-6 md:p-8 border border-white/5 space-y-4 relative overflow-hidden">
+            <div className="glass rounded-[24px] p-6 md:p-8 border border-line space-y-4 relative overflow-hidden">
               <div className="absolute top-4 right-4 flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald"></span>
@@ -133,7 +133,7 @@ export default function Contact() {
                 type="button"
                 onClick={handleCopyEmail}
                 aria-label={`Copy email address ${CONTACT.social.email}`}
-                className="w-full flex items-center justify-between p-4 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-white/10 rounded-xl transition-all duration-300"
+                className="w-full flex items-center justify-between p-4 bg-tint hover:bg-tint-strong border border-line hover:border-line rounded-xl transition-all duration-300"
               >
                 <div className="flex items-center gap-3">
                   <Mail size={16} className="text-electric-blue" />
@@ -153,7 +153,7 @@ export default function Contact() {
                   href={CONTACT.social.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 p-3 bg-white/[0.02] border border-white/5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 p-3 bg-tint border border-line rounded-xl text-text-secondary hover:text-text-primary hover:bg-tint transition-all"
                 >
                   <GithubIcon size={14} />
                   <span className="text-xs font-semibold font-[family-name:var(--font-heading)]">
@@ -165,7 +165,7 @@ export default function Contact() {
                   href={CONTACT.social.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 p-3 bg-white/[0.02] border border-white/5 rounded-xl text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all"
+                  className="flex-1 flex items-center justify-center gap-2 p-3 bg-tint border border-line rounded-xl text-text-secondary hover:text-text-primary hover:bg-tint transition-all"
                 >
                   <LinkedinIcon size={14} />
                   <span className="text-xs font-semibold font-[family-name:var(--font-heading)]">
@@ -181,12 +181,12 @@ export default function Contact() {
                 const isOpen = activeFaq === idx;
 
                 return (
-                  <div key={idx} className="border border-white/5 rounded-xl overflow-hidden">
+                  <div key={idx} className="border border-line rounded-xl overflow-hidden">
                     <button
                       type="button"
                       onClick={() => setActiveFaq(isOpen ? null : idx)}
                       aria-expanded={isOpen}
-                      className="w-full flex items-center justify-between p-4 bg-white/[0.01] hover:bg-white/[0.03] transition-colors text-left gap-4"
+                      className="w-full flex items-center justify-between p-4 bg-tint hover:bg-tint-strong transition-colors text-left gap-4"
                     >
                       <span className="text-xs font-semibold text-text-primary font-[family-name:var(--font-heading)]">
                         {faq.q}
@@ -202,9 +202,9 @@ export default function Contact() {
                     <motion.div
                       initial={false}
                       animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-                      className="overflow-hidden bg-white/[0.005]"
+                      className="overflow-hidden bg-tint"
                     >
-                      <p className="p-4 border-t border-white/5 text-xs text-text-muted leading-relaxed">
+                      <p className="p-4 border-t border-line text-xs text-text-muted leading-relaxed">
                         {faq.a}
                       </p>
                     </motion.div>
@@ -391,7 +391,7 @@ export default function Contact() {
                     <button
                       type="button"
                       onClick={() => setFormSubmitted(false)}
-                      className="px-6 py-2 text-xs font-semibold rounded-full border border-white/10 text-text-secondary hover:text-text-primary hover:bg-white/5 transition-colors"
+                      className="px-6 py-2 text-xs font-semibold rounded-full border border-line text-text-secondary hover:text-text-primary hover:bg-tint transition-colors"
                     >
                       Send another message
                     </button>

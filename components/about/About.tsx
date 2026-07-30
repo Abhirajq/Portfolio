@@ -61,6 +61,25 @@ function AnimatedCounter({ value }: { value: string }) {
   );
 }
 
+// Feed-forward network geometry for the About illustration: 4 → 5 → 3 nodes,
+// fully connected. Computed once at module scope rather than per render.
+const NETWORK_LAYERS: { x: number; y: number }[][] = [
+  [40, 80, 120, 160].map((y) => ({ x: 38, y })),
+  [30, 65, 100, 135, 170].map((y) => ({ x: 100, y })),
+  [65, 100, 135].map((y) => ({ x: 162, y })),
+];
+
+const NETWORK_EDGES = NETWORK_LAYERS.slice(0, -1).flatMap((layer, li) =>
+  layer.flatMap((from) =>
+    NETWORK_LAYERS[li + 1].map((to) => ({
+      x1: from.x,
+      y1: from.y,
+      x2: to.x,
+      y2: to.y,
+    })),
+  ),
+);
+
 const principleIcons: Record<string, LucideIcon> = {
   BookOpen,
   BarChart3,
@@ -84,11 +103,11 @@ export default function About({ stats }: AboutProps) {
   const [activeModule, setActiveModule] = useState<number | null>(null);
 
   return (
-    <div className="space-y-32">
+    <div className="space-y-20 md:space-y-24">
       {/* ============================================
          ABOUT SUBSECTION
          ============================================ */}
-      <section id="about" className="py-20 relative scroll-mt-20">
+      <section id="about" className="py-20 md:py-24 relative scroll-mt-20">
         <div className="section-container relative z-10">
           <SectionHeader
             label="About"
@@ -96,7 +115,7 @@ export default function About({ stats }: AboutProps) {
             subtitle="Bridging the gap between cutting-edge ML research and production-ready architectures."
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mt-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
             {/* Left Column — Scientific SVG Illustration */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -105,77 +124,65 @@ export default function About({ stats }: AboutProps) {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="lg:col-span-5 flex justify-center"
             >
-              <div className="relative w-full max-w-sm aspect-square glass rounded-[24px] overflow-hidden flex items-center justify-center p-8 glow-blue border border-white/10">
+              {/* A dense feed-forward network reads as "ML" at a glance. The
+                  previous four-dot orbit left most of the card empty. */}
+              <div className="relative w-full max-w-sm aspect-square glass rounded-[24px] overflow-hidden flex items-center justify-center p-6 glow-blue border border-line">
                 <svg
                   viewBox="0 0 200 200"
-                  className="w-full h-full text-electric-blue opacity-80"
+                  className="w-full h-full text-electric-blue"
                   fill="none"
                   aria-hidden="true"
                 >
-                  <motion.path
-                    d="M 30,100 C 50,50 150,50 170,100 C 150,150 50,150 30,100 Z"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                    strokeDasharray="4 4"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                    style={{ transformOrigin: "center" }}
-                  />
-                  <motion.path
-                    d="M 50,100 C 70,70 130,70 150,100 C 130,130 70,130 50,100 Z"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    animate={{ rotate: -360 }}
-                    transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                    style={{ transformOrigin: "center" }}
-                  />
-
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r="15"
-                    className="fill-bg-primary stroke-neural-cyan"
-                    strokeWidth="2"
-                  />
-                  <circle cx="100" cy="100" r="6" className="fill-neural-cyan" />
-
-                  {[
-                    { cx: 50, cy: 60 },
-                    { cx: 150, cy: 60 },
-                    { cx: 50, cy: 140 },
-                    { cx: 150, cy: 140 },
-                  ].map((node, i) => (
-                    <g key={i}>
-                      <motion.line
-                        x1="100"
-                        y1="100"
-                        x2={node.cx}
-                        y2={node.cy}
-                        stroke="currentColor"
-                        strokeWidth="1"
-                        animate={{ opacity: [0.2, 0.8, 0.2] }}
-                        transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
-                      />
-                      <circle
-                        cx={node.cx}
-                        cy={node.cy}
-                        r={8}
-                        className="fill-bg-primary stroke-electric-blue"
-                        strokeWidth="1.5"
-                      />
-                      {/* Pulse standing in for the data-flow particles, which
-                          previously used a non-existent `motionPath` CSS key
-                          and therefore never animated. */}
-                      <motion.circle
-                        cx={node.cx}
-                        cy={node.cy}
-                        r="3"
-                        className="fill-electric-blue"
-                        animate={{ opacity: [0.3, 1, 0.3], r: [2.5, 4, 2.5] }}
-                        transition={{ duration: 3, repeat: Infinity, delay: i * 0.75 }}
-                      />
-                    </g>
+                  {NETWORK_EDGES.map((edge, i) => (
+                    <motion.line
+                      key={`e${i}`}
+                      x1={edge.x1}
+                      y1={edge.y1}
+                      x2={edge.x2}
+                      y2={edge.y2}
+                      stroke="currentColor"
+                      strokeWidth="0.6"
+                      initial={{ opacity: 0.12 }}
+                      animate={{ opacity: [0.08, 0.45, 0.08] }}
+                      transition={{
+                        duration: 3.5,
+                        repeat: Infinity,
+                        delay: (i % 9) * 0.35,
+                        ease: "easeInOut",
+                      }}
+                    />
                   ))}
+
+                  {NETWORK_LAYERS.flatMap((layer, li) =>
+                    layer.map((node, ni) => (
+                      <g key={`n${li}-${ni}`}>
+                        <circle
+                          cx={node.x}
+                          cy={node.y}
+                          r="6.5"
+                          className={
+                            li === 1
+                              ? "fill-bg-primary stroke-neural-cyan"
+                              : "fill-bg-primary stroke-electric-blue"
+                          }
+                          strokeWidth="1.2"
+                        />
+                        <motion.circle
+                          cx={node.x}
+                          cy={node.y}
+                          r="2.6"
+                          className={li === 1 ? "fill-neural-cyan" : "fill-electric-blue"}
+                          animate={{ opacity: [0.35, 1, 0.35] }}
+                          transition={{
+                            duration: 2.6,
+                            repeat: Infinity,
+                            delay: (li * 3 + ni) * 0.22,
+                            ease: "easeInOut",
+                          }}
+                        />
+                      </g>
+                    )),
+                  )}
                 </svg>
               </div>
             </motion.div>
@@ -202,7 +209,7 @@ export default function About({ stats }: AboutProps) {
                 {stats.map((stat) => (
                   <div
                     key={stat.label}
-                    className="p-4 glass rounded-2xl text-center border border-white/5"
+                    className="card-raised p-4 rounded-2xl text-center"
                   >
                     <dd className="text-2xl md:text-3xl font-bold font-[family-name:var(--font-heading)] gradient-text">
                       <AnimatedCounter value={stat.value} />
@@ -231,7 +238,7 @@ export default function About({ stats }: AboutProps) {
                     className="flex flex-col h-full text-left"
                     delay={i * 0.1}
                   >
-                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-electric-blue mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-tint border border-line flex items-center justify-center text-electric-blue mb-4">
                       <Icon size={20} />
                     </div>
                     <h4 className="font-semibold text-text-primary text-sm mb-2 font-[family-name:var(--font-heading)]">
@@ -251,7 +258,7 @@ export default function About({ stats }: AboutProps) {
       {/* ============================================
          EXPERIENCE SUBSECTION
          ============================================ */}
-      <section id="experience" className="py-20 relative bg-bg-secondary/10 scroll-mt-20">
+      <section id="experience" className="py-20 md:py-24 relative bg-band/60 scroll-mt-20">
         <div className="section-container relative z-10">
           <SectionHeader
             label="Experience"
@@ -259,10 +266,10 @@ export default function About({ stats }: AboutProps) {
             subtitle="Hands-on experience developing dataset infrastructure and automated evaluation pipelines."
           />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             {/* Timeline Column */}
             <div className="lg:col-span-4 flex flex-col items-center lg:items-start">
-              <div className="relative border-l border-white/10 pl-6 space-y-12">
+              <div className="relative border-l border-line pl-6 space-y-12">
                 <div className="relative">
                   <div className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-electric-blue border-4 border-bg-primary glow-blue" />
                   <h4 className="font-bold text-text-primary text-sm font-[family-name:var(--font-heading)]">
@@ -275,7 +282,7 @@ export default function About({ stats }: AboutProps) {
                 </div>
 
                 <div className="relative opacity-70">
-                  <div className="absolute -left-[29px] top-1.5 w-3.5 h-3.5 rounded-full bg-white/20 border-4 border-bg-primary" />
+                  <div className="absolute -left-[29px] top-1.5 w-3.5 h-3.5 rounded-full bg-tint-strong border-4 border-bg-primary" />
                   <h4 className="font-bold text-text-muted text-sm font-[family-name:var(--font-heading)]">
                     AI Projects
                   </h4>
@@ -286,7 +293,7 @@ export default function About({ stats }: AboutProps) {
                 </div>
 
                 <div className="relative opacity-70">
-                  <div className="absolute -left-[29px] top-1.5 w-3.5 h-3.5 rounded-full bg-white/20 border-4 border-bg-primary" />
+                  <div className="absolute -left-[29px] top-1.5 w-3.5 h-3.5 rounded-full bg-tint-strong border-4 border-bg-primary" />
                   <h4 className="font-bold text-text-muted text-sm font-[family-name:var(--font-heading)]">
                     Research Publication
                   </h4>
@@ -301,7 +308,7 @@ export default function About({ stats }: AboutProps) {
             {/* Content Details Column */}
             <div className="lg:col-span-8 space-y-8">
               <GlowCard hover={false} glowColor="purple">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/5 pb-4 mb-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line pb-4 mb-6">
                   <div>
                     <h3 className="text-xl font-bold font-[family-name:var(--font-heading)] text-text-primary">
                       {EXPERIENCE.role}
@@ -333,8 +340,8 @@ export default function About({ stats }: AboutProps) {
                         onClick={() => setActiveModule(isActive ? null : idx)}
                         className={`p-4 rounded-xl border text-left transition-all duration-300 ${
                           isActive
-                            ? "bg-white/5 border-white/10 glow-blue"
-                            : "bg-transparent border-white/5 hover:border-white/10 hover:bg-white/[0.02]"
+                            ? "bg-tint border-line glow-blue"
+                            : "bg-transparent border-line hover:border-line hover:bg-tint"
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -364,7 +371,7 @@ export default function About({ stats }: AboutProps) {
                 </div>
 
                 {/* Achievements */}
-                <div className="mt-8 pt-6 border-t border-white/5">
+                <div className="mt-8 pt-6 border-t border-line">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-text-muted mb-4 font-[family-name:var(--font-heading)]">
                     Internship Achievements
                   </h4>
@@ -372,7 +379,7 @@ export default function About({ stats }: AboutProps) {
                     {EXPERIENCE.achievements.map((achievement) => (
                       <div
                         key={achievement.title}
-                        className="p-4 bg-white/[0.02] border border-white/5 rounded-xl text-center"
+                        className="p-4 bg-tint border border-line rounded-xl text-center"
                       >
                         <div className="text-xl mb-1" aria-hidden="true">
                           {achievement.emoji}
