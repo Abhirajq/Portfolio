@@ -24,14 +24,13 @@ function subscribe(onChange: () => void) {
 }
 
 function getSnapshot(): Theme {
-  const attr = document.documentElement.getAttribute("data-theme");
-  if (attr === "light" || attr === "dark") return attr;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  // Dark is the default look, so anything other than an explicit "light" is dark.
+  return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
 }
 
 // The server cannot know the visitor's preference; the icons are swapped by
 // CSS (see globals.css) so this only affects the accessible label.
-const getServerSnapshot = (): Theme => "light";
+const getServerSnapshot = (): Theme => "dark";
 
 export default function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);

@@ -19,14 +19,20 @@ const BLOBS = [
     style: { top: "-18%", left: "-12%", width: "min(56vw, 820px)", height: "min(56vw, 820px)" },
   },
   {
+    // Behind the portrait: the plasma core. Magenta against the cyan below is
+    // what gives the reference renders their charge.
+    accent: "var(--t-magenta)",
+    style: { top: "2%", right: "-6%", width: "min(44vw, 660px)", height: "min(44vw, 660px)" },
+  },
+  {
     // Mid-right, violet — carries the eye through About/Projects
     accent: "var(--t-purple)",
-    style: { top: "22%", right: "-16%", width: "min(60vw, 900px)", height: "min(60vw, 900px)" },
+    style: { top: "24%", right: "-16%", width: "min(60vw, 900px)", height: "min(60vw, 900px)" },
   },
   {
     // Lower-centre, cyan — keeps the fold below Skills from going inert
     accent: "var(--t-cyan)",
-    style: { bottom: "-22%", left: "28%", width: "min(52vw, 760px)", height: "min(52vw, 760px)" },
+    style: { bottom: "-22%", left: "26%", width: "min(52vw, 760px)", height: "min(52vw, 760px)" },
   },
 ];
 

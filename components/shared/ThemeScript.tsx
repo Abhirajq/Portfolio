@@ -6,8 +6,8 @@
  * has to be an inline, render-blocking script in <body> (Next hoists it into
  * the document); a `useEffect` in a client component runs too late.
  *
- * Stored preference wins; otherwise we leave the attribute off entirely so the
- * `prefers-color-scheme` media query in globals.css stays in charge.
+ * Stored preference wins; with none, the attribute stays off and :root's dark
+ * defaults apply.
  */
 const script = `
 (function () {

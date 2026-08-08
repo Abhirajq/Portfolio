@@ -71,11 +71,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   // Browser UI follows whichever theme the visitor resolved to.
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a1a" },
-  ],
-  colorScheme: "light dark",
+  themeColor: "#05060f",
+  colorScheme: "dark light",
 };
 
 // Structured data — helps search engines associate the site with the person,

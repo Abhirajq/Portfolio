@@ -6,22 +6,64 @@
 /* ============================================
    THEME TOKENS
 
-   Light is the default. Dark applies when the visitor's OS asks for it, and
-   an explicit `data-theme` on <html> always wins over the media query so the
-   navbar toggle can override either direction.
+   Dark is the default and carries the brand look; light is opt-in via the
+   navbar toggle, which writes `data-theme` to <html>.
 
-   Everything downstream reads these six surface/line/text variables rather
-   than hardcoding `white/5`-style utilities, which are invisible on a light
+   Everything downstream reads these surface/line/text variables rather than
+   hardcoding `white/5`-style utilities, which are invisible on a light
    background. Adding a third theme later means editing only this block.
    ============================================ */
 
+/* DARK IS THE DEFAULT — it carries the brand look (deep near-black, plasma
+   cyan/magenta bloom, circuit grid). It is deliberately NOT behind a
+   prefers-color-scheme query: a visitor on a light OS should still land on the
+   intended aesthetic. The navbar toggle is the escape hatch. */
 :root {
+  color-scheme: dark;
+
+  /* Deeper and cooler than before, closer to the reference renders. */
+  --t-bg: #05060f;
+  --t-bg-2: #0a0c18;
+  --t-surface: #0d1020;
+  /* Translucent wash used for chips and inset panels */
+  --t-tint: rgba(255, 255, 255, 0.04);
+  --t-tint-strong: rgba(255, 255, 255, 0.09);
+  --t-line: rgba(255, 255, 255, 0.09);
+  --t-line-strong: rgba(255, 255, 255, 0.18);
+
+  --t-text: #eaf2ff;
+  --t-text-2: #c3cfe4;
+  --t-text-muted: #8f9bb3;
+  --t-text-faint: #64748b;
+
+  /* Saturated, emissive accents — these are light sources, not paint. */
+  --t-blue: #3b82f6;
+  --t-cyan: #22d3ee;
+  --t-purple: #a855f7;
+  --t-magenta: #ec4899;
+  --t-emerald: #10b981;
+  --t-orange: #f59e0b;
+
+  --t-glass: rgba(255, 255, 255, 0.05);
+  --t-glass-line: rgba(255, 255, 255, 0.09);
+  --t-shadow: 0 18px 44px -20px rgba(0, 0, 0, 0.9);
+  --t-grain: 0.035;
+  /* Faintly blue so the grid reads as circuitry rather than graph paper. */
+  --t-grid-line: rgba(120, 180, 255, 0.055);
+  --t-glow: 24%;
+  --t-band: rgba(10, 12, 24, 0.5);
+  --t-aurora: 26%;
+  --t-code-bg: #0b0f1c;
+  --t-code-text: #cbd5e1;
+}
+
+/* Light stays available via the toggle. */
+:root[data-theme="light"] {
   color-scheme: light;
 
   --t-bg: #f8fafc;
   --t-bg-2: #ffffff;
   --t-surface: #ffffff;
-  /* Translucent wash used for chips and inset panels */
   --t-tint: rgba(15, 23, 42, 0.035);
   --t-tint-strong: rgba(15, 23, 42, 0.07);
   --t-line: rgba(15, 23, 42, 0.1);
@@ -36,6 +78,7 @@
   --t-blue: #4f46e5;
   --t-cyan: #0891b2;
   --t-purple: #7c3aed;
+  --t-magenta: #db2777;
   --t-emerald: #059669;
   --t-orange: #d97706;
 
@@ -49,77 +92,6 @@
   --t-aurora: 9%;
   --t-code-bg: #0f172a;
   --t-code-text: #e2e8f0;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-
-    --t-bg: #0a0a1a;
-    --t-bg-2: #0d1117;
-    --t-surface: #0d1117;
-    --t-tint: rgba(255, 255, 255, 0.04);
-    --t-tint-strong: rgba(255, 255, 255, 0.09);
-    --t-line: rgba(255, 255, 255, 0.08);
-    --t-line-strong: rgba(255, 255, 255, 0.16);
-
-    --t-text: #f0f4ff;
-    --t-text-2: #cbd5e1;
-    --t-text-muted: #94a3b8;
-    --t-text-faint: #64748b;
-
-    --t-blue: #3b82f6;
-    --t-cyan: #06b6d4;
-    --t-purple: #8b5cf6;
-    --t-emerald: #10b981;
-    --t-orange: #f59e0b;
-
-    --t-glass: rgba(255, 255, 255, 0.05);
-    --t-glass-line: rgba(255, 255, 255, 0.08);
-    --t-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.8);
-    --t-grain: 0.035;
-    --t-grid-line: rgba(255, 255, 255, 0.025);
-    --t-glow: 18%;
-    --t-band: rgba(13, 17, 23, 0.45);
-    --t-aurora: 15%;
-    --t-code-bg: #11151f;
-    --t-code-text: #cbd5e1;
-  }
-}
-
-/* Explicit choice from the toggle — wins over the media query above. */
-:root[data-theme="dark"] {
-  color-scheme: dark;
-
-  --t-bg: #0a0a1a;
-  --t-bg-2: #0d1117;
-  --t-surface: #0d1117;
-  --t-tint: rgba(255, 255, 255, 0.04);
-  --t-tint-strong: rgba(255, 255, 255, 0.09);
-  --t-line: rgba(255, 255, 255, 0.08);
-  --t-line-strong: rgba(255, 255, 255, 0.16);
-
-  --t-text: #f0f4ff;
-  --t-text-2: #cbd5e1;
-  --t-text-muted: #94a3b8;
-  --t-text-faint: #64748b;
-
-  --t-blue: #3b82f6;
-  --t-cyan: #06b6d4;
-  --t-purple: #8b5cf6;
-  --t-emerald: #10b981;
-  --t-orange: #f59e0b;
-
-  --t-glass: rgba(255, 255, 255, 0.05);
-  --t-glass-line: rgba(255, 255, 255, 0.08);
-  --t-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.8);
-  --t-grain: 0.035;
-  --t-grid-line: rgba(255, 255, 255, 0.025);
-  --t-glow: 18%;
-  --t-band: rgba(13, 17, 23, 0.45);
-  --t-aurora: 15%;
-  --t-code-bg: #11151f;
-  --t-code-text: #cbd5e1;
 }
 
 @theme inline {
@@ -146,6 +118,7 @@
   --color-ai-purple: var(--t-purple);
   --color-emerald: var(--t-emerald);
   --color-soft-orange: var(--t-orange);
+  --color-magenta: var(--t-magenta);
   --color-band: var(--t-band);
   --color-code-bg: var(--t-code-bg);
   --color-code-text: var(--t-code-text);
@@ -444,31 +417,18 @@ code, pre, .font-code {
 /* The portrait's light studio backdrop fights a near-black page, so it gets
    graded down in dark mode only. On the light theme it needs no correction. */
 .portrait-grade {
-  filter: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .portrait-grade {
-    filter: grayscale(0.3) contrast(1.06) brightness(0.9);
-  }
-}
-
-:root[data-theme="dark"] .portrait-grade {
   filter: grayscale(0.3) contrast(1.06) brightness(0.9);
+}
+
+:root[data-theme="light"] .portrait-grade {
+  filter: none;
 }
 
 /* Theme toggle icons — swapped in CSS so the correct one is present in the
    very first paint. Driving this from React state flashes the wrong icon for
    a frame, because the server cannot know the visitor's preference. */
-.icon-sun { display: none; }
-.icon-moon { display: block; }
+.icon-sun { display: block; }
+.icon-moon { display: none; }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .icon-sun { display: block; }
-  :root:not([data-theme="light"]) .icon-moon { display: none; }
-}
-
-:root[data-theme="dark"] .icon-sun { display: block; }
-:root[data-theme="dark"] .icon-moon { display: none; }
 :root[data-theme="light"] .icon-sun { display: none; }
 :root[data-theme="light"] .icon-moon { display: block; }
